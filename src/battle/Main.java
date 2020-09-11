@@ -1,5 +1,7 @@
 package battle;
 
+import battle.combat.Combat;
+import battle.combat.ICombat;
 import battle.entity.*;
 import java.util.Arrays;
 import java.util.List;
@@ -11,8 +13,8 @@ public class Main {
 
     public static void main(String[] args) {
 
-        int numberOfCombats = 3;    // Setting number of combats
-        Combat combat;
+        int numberOfCombats = 1;    // Setting number of combats
+        ICombat combat;
         Animal firtsFighter;
         Animal secondFighter;
 

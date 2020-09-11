@@ -1,10 +1,10 @@
-package battle;
+package battle.combat;
 
 import battle.entity.Animal;
-import java.math.BigDecimal;
+
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Combat{
+public class Combat implements ICombat {
 
     private int serialAttacks = 1;            // Серия атак
     private int round = 1;                    // Номер хода
@@ -12,7 +12,7 @@ public class Combat{
     private Animal attacker;
     private Animal defender;
 
-    public void startCombat(Animal firstFighter, Animal secondFighter){
+    public void startCombat(Animal firstFighter, Animal secondFighter) {
         while (winner == null) {
             chooseWhoAttack(firstFighter, secondFighter);
             attack();
@@ -26,12 +26,12 @@ public class Combat{
      *  В последующих ходах каждому атакующему может выпасть счастливое число атаковать еще раз
      *  Если не выпала повторная атака, атакующий и защищающийся меняются местами
      */
-    public void chooseWhoAttack(Animal firstFighter, Animal secondFighter){
+    private void chooseWhoAttack(Animal firstFighter, Animal secondFighter) {
         System.out.println("******* ROUND" + round + " *******");
         round++;
 
         if (attacker == null) {
-            if (ThreadLocalRandom.current().nextInt(0,2) == 0) {
+            if (ThreadLocalRandom.current().nextInt(0, 2) == 0) {
                 attacker = firstFighter;
                 defender = secondFighter;
             } else {
@@ -58,7 +58,7 @@ public class Combat{
      * С каждой повторной атакой вероятность уменьшается пропорцианально серии атак
      */
     private boolean checkLuckyAttack() {
-        return (ThreadLocalRandom.current().nextInt(1,10 * serialAttacks) == 5);
+        return (ThreadLocalRandom.current().nextInt(1, 10 * serialAttacks) == 5);
     }
 
     /*
@@ -66,11 +66,9 @@ public class Combat{
      * Урон расчитывается исходя из силы в зависимости от велечины выносливости в данный момент
      * и от него отнимается велечина ловкости, которая тоже расчитывается в зависимости от выносливости
      */
-    public void attack(){
-        BigDecimal damage = attacker.getForce().multiply(attacker.getEndurance()).subtract(defender.getAgility().multiply(defender.getEndurance()));
-        if (damage.compareTo(BigDecimal.ONE) <= 0){
-            damage = BigDecimal.ONE;
-        }
+    private void attack() {
+        int damage = (attacker.getForce() * attacker.getEndurance()) - (defender.getAgility() * defender.getEndurance());
+        damage = Math.max(damage, 1);
 
         System.out.println(defender.getName() + " is damaged by " + damage);
 
@@ -84,8 +82,8 @@ public class Combat{
     /*
      * Если у защищающегося здоровье равно 0, то атакующий признается победителем
      */
-    public void checkWinner(){
-        if (defender.getHealth().compareTo(BigDecimal.ZERO) == 0) {
+    private void checkWinner() {
+        if (defender.getHealth() == 0) {
             winner = attacker;
             System.out.println("******* ENF OF THE BATTLE *******");
             System.out.println("The winner is " + attacker.getName());

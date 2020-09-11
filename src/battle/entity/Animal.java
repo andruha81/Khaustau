@@ -1,38 +1,35 @@
 package battle.entity;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
 import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class Animal {
 
     protected String name;
     protected String typeOfAnimal;
-    protected BigDecimal force;                                             // Сила, влияет на велечину атаки
-    protected BigDecimal agility;                                           // Ловкость, влияет на способность увернутся от атаки и уменьшить урон
-    protected BigDecimal endurance = new BigDecimal("1.0");             // Выносливость, чем она меньше, тем меньше сила и ловкость
-    protected BigDecimal minEndurance = new BigDecimal("0.1");          // Минимальная выносливость
-    protected BigDecimal rateDecreaseEndurance;                             // Коэффициент уменьшения выносливости после каждого хода
-    protected BigDecimal health = new BigDecimal("10");                 // Здоровье
+    protected int force;                                             // Сила, влияет на велечину атаки
+    protected int agility;                                           // Ловкость, влияет на способность увернутся от атаки и уменьшить урон
+    protected int endurance = 5;                                    // Выносливость, чем она меньше, тем меньше сила и ловкость
+    protected int rateDecreaseEndurance;                             // Коэффициент уменьшения выносливости после каждого хода
+    protected int health = 20;                                      // Здоровье
 
     public Animal(String newName) {
         this.name = newName;
-        this.rateDecreaseEndurance = BigDecimal.valueOf(ThreadLocalRandom.current().nextDouble(0.05, 0.15)).round(new MathContext(1));
+        this.rateDecreaseEndurance = ThreadLocalRandom.current().nextInt(1, 2);
     }
 
     public String getName() {
         return (typeOfAnimal + " " + name);
     }
 
-    public BigDecimal getForce() {
+    public int getForce() {
         return force;
     }
 
-    public BigDecimal getAgility() {
+    public int getAgility() {
         return agility;
     }
 
-    public BigDecimal getEndurance() {
+    public int getEndurance() {
         return endurance;
     }
 
@@ -40,24 +37,20 @@ public abstract class Animal {
      * Уменьшение выносливости после каждого хода
      */
     public void setEndurance() {
-        this.endurance = endurance.subtract(rateDecreaseEndurance);
-        if (endurance.compareTo(minEndurance) <= 0) {
-            endurance = minEndurance;
-        }
+        this.endurance -= rateDecreaseEndurance;
+        this.endurance = Math.max(endurance, 1);
     }
 
-    public BigDecimal getHealth() {
+    public int getHealth() {
         return health;
     }
 
     /*
      * Уменьшение здоровья на велечину урона
      */
-    public void setHealth(BigDecimal healthDamage) {
-        this.health = health.subtract(healthDamage);
-        if (health.compareTo(BigDecimal.ZERO) == -1) {
-            this.health = BigDecimal.ZERO;
-        }
+    public void setHealth(int healthDamage) {
+        this.health -= healthDamage;
+        this.health = Math.max(this.health, 0);
     }
 
     /*
