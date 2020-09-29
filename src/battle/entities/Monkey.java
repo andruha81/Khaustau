@@ -1,4 +1,4 @@
-package battle.entity;
+package battle.entities;
 
 import java.util.concurrent.ThreadLocalRandom;
 

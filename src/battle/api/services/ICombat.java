@@ -1,6 +1,6 @@
-package battle.combat;
+package battle.api.services;
 
-import battle.entity.Animal;
+import battle.entities.Animal;
 
 public interface ICombat {
     void startCombat(Animal animal1, Animal animal2);

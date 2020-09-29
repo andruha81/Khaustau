@@ -1,6 +1,7 @@
-package battle.combat;
+package battle.services;
 
-import battle.entity.Animal;
+import battle.api.services.ICombat;
+import battle.entities.Animal;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -20,12 +21,7 @@ public class Combat implements ICombat {
         }
     }
 
-    /*
-     * Выбор атакующего бойца
-     * В первом ходе определяется случайно
-     *  В последующих ходах каждому атакующему может выпасть счастливое число атаковать еще раз
-     *  Если не выпала повторная атака, атакующий и защищающийся меняются местами
-     */
+
     private void chooseWhoAttack(Animal firstFighter, Animal secondFighter) {
         System.out.println("******* ROUND" + round + " *******");
         round++;
@@ -53,35 +49,22 @@ public class Combat implements ICombat {
         System.out.println("Attacking " + attacker.getName() + ", defending " + defender.getName());
     }
 
-    /*
-     * Проверка повезло ли атакующему нанести удар еще раз
-     * С каждой повторной атакой вероятность уменьшается пропорцианально серии атак
-     */
+
     private boolean checkLuckyAttack() {
         return (ThreadLocalRandom.current().nextInt(1, 10 * serialAttacks) == 5);
     }
 
-    /*
-     * Нападение
-     * Урон расчитывается исходя из силы в зависимости от велечины выносливости в данный момент
-     * и от него отнимается велечина ловкости, которая тоже расчитывается в зависимости от выносливости
-     */
     private void attack() {
-        int damage = (attacker.getForce() * attacker.getEndurance()) - (defender.getAgility() * defender.getEndurance());
+        int damage = (attacker.getForce() - defender.getAgility());
         damage = Math.max(damage, 1);
 
         System.out.println(defender.getName() + " is damaged by " + damage);
 
         defender.setHealth(damage);
-        defender.setEndurance();
-        attacker.setEndurance();
 
         System.out.println(defender.getName() + " health is " + defender.getHealth());
     }
 
-    /*
-     * Если у защищающегося здоровье равно 0, то атакующий признается победителем
-     */
     private void checkWinner() {
         if (defender.getHealth() == 0) {
             winner = attacker;
