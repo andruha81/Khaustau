@@ -8,19 +8,27 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Combat implements ICombat {
 
     private int serialAttacks = 1;            // Серия атак
-    private int round = 1;                    // Номер хода
+    private int round;                    // Номер хода
     private Animal winner;
     private Animal attacker;
     private Animal defender;
 
-    public void startCombat(Animal firstFighter, Animal secondFighter) {
+    public Animal startCombat(Animal firstFighter, Animal secondFighter) {
+
+        winner = attacker = defender = null;
+        round = 1;
+        serialAttacks = 1;
+
         while (winner == null) {
             chooseWhoAttack(firstFighter, secondFighter);
             attack();
             checkWinner();
         }
-    }
 
+        attacker.setHealthDefault();
+        defender.setHealthDefault();
+        return winner;
+    }
 
     private void chooseWhoAttack(Animal firstFighter, Animal secondFighter) {
         System.out.println("******* ROUND" + round + " *******");
@@ -37,7 +45,7 @@ public class Combat implements ICombat {
 
         } else if (checkLuckyAttack()) {
             System.out.println("Another chance to attack for " + attacker.getName());
-            serialAttacks += 1;
+            serialAttacks++;
 
         } else {
             Animal fighter = attacker;
@@ -49,9 +57,8 @@ public class Combat implements ICombat {
         System.out.println("Attacking " + attacker.getName() + ", defending " + defender.getName());
     }
 
-
     private boolean checkLuckyAttack() {
-        return (ThreadLocalRandom.current().nextInt(1, 10 * serialAttacks) == 5);
+        return (ThreadLocalRandom.current().nextInt(1, 5 * serialAttacks) == 5);
     }
 
     private void attack() {
@@ -60,7 +67,7 @@ public class Combat implements ICombat {
 
         System.out.println(defender.getName() + " is damaged by " + damage);
 
-        defender.setHealth(damage);
+        defender.editHealth(damage);
 
         System.out.println(defender.getName() + " health is " + defender.getHealth());
     }

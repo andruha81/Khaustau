@@ -3,38 +3,51 @@ package battle.entities;
 public abstract class Animal {
 
     protected String name;
-    protected String typeOfAnimal;
+    protected TypeOfAnimals typeOfAnimal;
     protected int force;                                             // Сила, влияет на велечину атаки
     protected int agility;                                           // Ловкость, влияет на способность увернутся от атаки и уменьшить урон
-    protected int health = 20;                                      // Здоровье
+    protected int health = 10;                                      // Здоровье
+    protected int victories = 0;
 
     public Animal(String newName) {
         this.name = newName;
     }
 
     public String getName() {
-        return (typeOfAnimal + " " + name);
+        return this.name;
     }
 
     public int getForce() {
-        return force;
+        return this.force;
     }
 
     public int getAgility() {
-        return agility;
+        return this.agility;
     }
 
     public int getHealth() {
-        return health;
+        return this.health;
     }
 
-    public void setHealth(int healthDamage) {
+    public int getVictories() {
+        return this.victories;
+    }
+
+    public void setHealthDefault() {
+        this.health = 10;
+    }
+
+    public void editHealth(int healthDamage) {
         this.health -= healthDamage;
         this.health = Math.max(this.health, 0);
     }
 
-    public void printFighter(int fighterNumber) {
-        System.out.println("Fighter " + fighterNumber + " " + getName());
-        System.out.println("Force: " + force + ", Agility: " + agility);
+    public void editVictories() {
+        this.victories++;
+    }
+
+    @Override
+    public String toString() {
+        return this.typeOfAnimal + " " + name + "\n" + "Force: " + force + ", Agility: " + agility;
     }
 }

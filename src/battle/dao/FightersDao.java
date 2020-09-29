@@ -13,5 +13,16 @@ public class FightersDao implements IFightersDao {
     @Override
     public void addFighter(Animal fighter) {
         this.fighters.put(fighter.getName(), fighter);
+        System.out.println("Fighter added: " + fighter.toString());
+    }
+
+    @Override
+    public Map<String, Animal> getFighters() {
+        return fighters;
+    }
+
+    @Override
+    public void editVictories(Animal fighter) {
+
     }
 }
