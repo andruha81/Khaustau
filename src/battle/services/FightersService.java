@@ -1,6 +1,6 @@
 package battle.services;
 
-import battle.api.services.IFightersServise;
+import battle.api.services.IFightersService;
 import battle.dao.FightersDao;
 import battle.entities.Animal;
 import battle.entities.Cat;
@@ -11,9 +11,9 @@ import battle.utils.Names;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class FightersServise implements IFightersServise {
+public class FightersService implements IFightersService {
 
-    FightersDao fightersDao = new FightersDao();
+    private final FightersDao fightersDao = new FightersDao();
 
     @Override
     public void addFighter() {
@@ -39,8 +39,10 @@ public class FightersServise implements IFightersServise {
         String name;
 
         do {
+
             name = Names.createName();
-        } while (checkNameRepeat(name));
+
+        } while (Names.checkNameRepeat(fightersDao.getFighters(),name));
 
         switch (randNumberOfFighter) {
             case 1:
@@ -62,15 +64,4 @@ public class FightersServise implements IFightersServise {
         return randomFighter;
     }
 
-    private boolean checkNameRepeat(String name) {
-
-        boolean resultCheckName = fightersDao.getFighters().containsKey(name);
-
-        if (resultCheckName) {
-            System.out.println("Fighter with name " + name + " exists. Enter another name");
-        }
-
-        return resultCheckName;
-
-    }
 }

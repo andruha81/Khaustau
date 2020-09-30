@@ -1,40 +1,34 @@
 package battle.entities;
 
+import lombok.Getter;
+
+@Getter
 public abstract class Animal {
 
+    private static final int DEFAULT_HEALTH = 10;
     protected String name;
     protected TypeOfAnimals typeOfAnimal;
-    protected int force;                                             // Сила, влияет на велечину атаки
-    protected int agility;                                           // Ловкость, влияет на способность увернутся от атаки и уменьшить урон
-    protected int health = 10;                                      // Здоровье
+    protected int force;
+    protected int agility;
+    protected int health = DEFAULT_HEALTH;
     protected int victories = 0;
 
-    public Animal(String newName) {
-        this.name = newName;
+    public Animal(String name) {
+        this.name = name;
     }
 
-    public String getName() {
-        return this.name;
+    @Override
+    public String toString() {
+        return this.typeOfAnimal + " " + name + ", victories: " + victories
+                + "\n" + "Force: " + force + ", Agility: " + agility;
     }
 
-    public int getForce() {
-        return this.force;
-    }
-
-    public int getAgility() {
-        return this.agility;
-    }
-
-    public int getHealth() {
-        return this.health;
-    }
-
-    public int getVictories() {
-        return this.victories;
+    public String getFullName() {
+        return this.typeOfAnimal + " " + this.getName();
     }
 
     public void setHealthDefault() {
-        this.health = 10;
+        this.health = DEFAULT_HEALTH;
     }
 
     public void editHealth(int healthDamage) {
@@ -46,8 +40,4 @@ public abstract class Animal {
         this.victories++;
     }
 
-    @Override
-    public String toString() {
-        return this.typeOfAnimal + " " + name + "\n" + "Force: " + force + ", Agility: " + agility;
-    }
 }

@@ -4,7 +4,7 @@ import battle.entities.Animal;
 
 import java.util.Map;
 
-public interface IFightersServise {
+public interface IFightersService {
 
     void addFighter();
 

@@ -1,41 +1,25 @@
 package battle;
 
-import battle.api.services.ICombat;
-import battle.api.services.IFightersServise;
-import battle.entities.Animal;
-import battle.services.Combat;
-import battle.services.FightersServise;
-
-import java.util.ArrayList;
-import java.util.List;
+import battle.api.services.IChampionship;
+import battle.services.Championship;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        int numberOfFighters = 5;    // Setting number of fighters
+        int numberOfFighters = 4;    // Setting number of fighters
+        IChampionship championship = new Championship();
 
-        IFightersServise fightersServise = new FightersServise();
 
-        ICombat combat = new Combat();
+        championship.start(numberOfFighters);
 
-        for (int i = 1; i <= numberOfFighters; i++) {
+        do {
 
-            fightersServise.addFighter();
+            championship.startCombat();
 
-        }
+            championship.printResults();
 
-        List<Animal> fightersReady = new ArrayList<>(fightersServise.getFighters().values());
-
-        for (int i = 0; i < fightersServise.getFighters().size() - 1; i++) {
-            for (int j = i + 1; j < fightersServise.getFighters().size(); j++) {
-
-                combat.startCombat(fightersReady.get(i), fightersReady.get(j)).editVictories();
-
-            }
-        }
-
-        fightersServise.getFighters().values().forEach(x -> System.out.println(x.getName() + " victories: " + x.getVictories()));
+        } while (!championship.checkWinner());
 
     }
 }

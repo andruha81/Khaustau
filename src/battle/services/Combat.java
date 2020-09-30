@@ -44,7 +44,7 @@ public class Combat implements ICombat {
             }
 
         } else if (checkLuckyAttack()) {
-            System.out.println("Another chance to attack for " + attacker.getName());
+            System.out.println("Another chance to attack for " + attacker.getFullName());
             serialAttacks++;
 
         } else {
@@ -54,7 +54,7 @@ public class Combat implements ICombat {
             serialAttacks = 1;
         }
 
-        System.out.println("Attacking " + attacker.getName() + ", defending " + defender.getName());
+        System.out.println("Attacking " + attacker.getFullName() + ", defending " + defender.getFullName());
     }
 
     private boolean checkLuckyAttack() {
@@ -65,18 +65,18 @@ public class Combat implements ICombat {
         int damage = (attacker.getForce() - defender.getAgility());
         damage = Math.max(damage, 1);
 
-        System.out.println(defender.getName() + " is damaged by " + damage);
+        System.out.println(defender.getFullName() + " is damaged by " + damage);
 
         defender.editHealth(damage);
 
-        System.out.println(defender.getName() + " health is " + defender.getHealth());
+        System.out.println(defender.getFullName() + " health is " + defender.getHealth());
     }
 
     private void checkWinner() {
         if (defender.getHealth() == 0) {
             winner = attacker;
             System.out.println("******* ENF OF THE BATTLE *******");
-            System.out.println("The winner is " + attacker.getName());
+            System.out.println("The winner is " + attacker.getFullName());
         }
     }
 }

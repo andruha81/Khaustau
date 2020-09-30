@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class FightersDao implements IFightersDao {
 
-    private Map<String, Animal> fighters = new LinkedHashMap<>();
+    private final Map<String, Animal> fighters = new LinkedHashMap<>();
 
     @Override
     public void addFighter(Animal fighter) {
@@ -23,6 +23,6 @@ public class FightersDao implements IFightersDao {
 
     @Override
     public void editVictories(Animal fighter) {
-
+        fighter.editVictories();
     }
 }
