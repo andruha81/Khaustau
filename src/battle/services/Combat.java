@@ -15,7 +15,9 @@ public class Combat implements ICombat {
 
     public Animal startCombat(Animal firstFighter, Animal secondFighter) {
 
-        winner = attacker = defender = null;
+        winner = null;
+        attacker = null;
+        defender = null;
         round = 1;
         serialAttacks = 1;
 

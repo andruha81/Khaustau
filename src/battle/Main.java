@@ -15,7 +15,7 @@ public class Main {
 
         do {
 
-            championship.startCombat();
+            championship.startCombats();
 
             championship.printResults();
 

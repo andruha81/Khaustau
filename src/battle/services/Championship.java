@@ -1,22 +1,19 @@
 package battle.services;
 
-import battle.api.exceptions.NullNumberException;
 import battle.api.services.IChampionship;
 import battle.api.services.ICombat;
 import battle.api.services.IFightersService;
 import battle.entities.Animal;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Championship implements IChampionship {
 
     private int numberOfCombats;
-    private int maxNumberOfVictories;
     private final IFightersService fightersService = new FightersService();
     private final ICombat combat = new Combat();
+    private final Map<Animal, Integer> championshipTable = new LinkedHashMap<>();
     private List<Animal> fightersReady;
 
     @Override
@@ -35,20 +32,18 @@ public class Championship implements IChampionship {
     }
 
     @Override
-    public void startCombat() {
+    public void startCombats() {
 
         for (int i = 0; i < fightersReady.size() - 1; i++) {
             for (int j = i + 1; j < fightersReady.size(); j++) {
 
                 numberOfCombats++;
 
-                System.out.println("----------------------------------");
-                System.out.println("-                                -");
-                System.out.println("-         COMBAT " + numberOfCombats + "               -");
-                System.out.println("-                                -");
-                System.out.println("----------------------------------");
+                System.out.println("---------COMBAT " + numberOfCombats + "-----------");
 
-                combat.startCombat(fightersReady.get(i), fightersReady.get(j)).editVictories();
+                Animal winner = combat.startCombat(fightersReady.get(i), fightersReady.get(j));
+
+                championshipTable.put(winner, championshipTable.containsKey(winner) ? championshipTable.get(winner) + 1 : 1);
 
             }
         }
@@ -57,31 +52,23 @@ public class Championship implements IChampionship {
     @Override
     public boolean checkWinner() {
 
-        try {
-            findMaxNumberOfVictories();
-        } catch (NullNumberException e) {
-            maxNumberOfVictories = 0;
-        }
+        int maxNumberOfVictories = Collections.max(championshipTable.values());
 
-        fightersReady = fightersService.getFighters()
-                .values()
+        fightersReady = championshipTable.entrySet()
                 .stream()
-                .filter(x -> x.getVictories() == maxNumberOfVictories)
+                .filter(x -> x.getValue() == maxNumberOfVictories)
+                .map(x -> x.getKey())
                 .collect(Collectors.toList());
 
         if (fightersReady.size() == 1) {
 
-            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             System.out.println("The winner of the championship is " + fightersReady.get(0).getFullName());
-            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
             return true;
 
-        } else if (maxNumberOfVictories == 0){
+        } else if (maxNumberOfVictories == 0) {
 
-            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             System.out.println("The championship was cancelled");
-            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
             return true;
 
@@ -97,24 +84,7 @@ public class Championship implements IChampionship {
 
         System.out.println("##############RESULTS#############");
 
-        fightersService.getFighters()
-                .values()
-                .stream()
-                .sorted(Comparator.comparing(Animal::getVictories))
-                .forEach(x -> System.out.println(x.getFullName() + " - " + x.getVictories() + " victories"));
-        System.out.println("##################################");
+        championshipTable.forEach((k, v) -> System.out.println(k.getFullName() + " - " + v + " victories"));
 
     }
-
-    private void findMaxNumberOfVictories() throws NullNumberException {
-
-        maxNumberOfVictories = fightersService.getFighters()
-                .values()
-                .stream()
-                .mapToInt(Animal::getVictories)
-                .max()
-                .orElseThrow(NullNumberException::new);
-
-    }
-
 }

@@ -11,7 +11,6 @@ public abstract class Animal {
     protected int force;
     protected int agility;
     protected int health = DEFAULT_HEALTH;
-    protected int victories = 0;
 
     public Animal(String name) {
         this.name = name;
@@ -19,7 +18,7 @@ public abstract class Animal {
 
     @Override
     public String toString() {
-        return this.typeOfAnimal + " " + name + ", victories: " + victories
+        return this.typeOfAnimal + " " + name
                 + "\n" + "Force: " + force + ", Agility: " + agility;
     }
 
@@ -35,9 +34,4 @@ public abstract class Animal {
         this.health -= healthDamage;
         this.health = Math.max(this.health, 0);
     }
-
-    public void editVictories() {
-        this.victories++;
-    }
-
 }

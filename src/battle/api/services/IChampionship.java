@@ -4,7 +4,7 @@ public interface IChampionship {
 
     void start(int numberOfFighters);
 
-    void startCombat();
+    void startCombats();
 
     boolean checkWinner();
 
