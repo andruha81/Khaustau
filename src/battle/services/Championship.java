@@ -1,9 +1,9 @@
 package battle.services;
 
 import battle.api.services.IChampionship;
-import battle.api.services.ICombat;
 import battle.api.services.IFightersService;
 import battle.entities.Animal;
+import battle.utils.Combat;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -12,20 +12,15 @@ public class Championship implements IChampionship {
 
     private int numberOfCombats;
     private final IFightersService fightersService = new FightersService();
-    private final ICombat combat = new Combat();
     private final Map<Animal, Integer> championshipTable = new LinkedHashMap<>();
     private List<Animal> fightersReady;
 
     @Override
-    public void start(int numberOfFighters) {
+    public void start() {
 
         System.out.println("============START OF THE CHAMPIONSHIP++++++++++++++++");
 
-        for (int i = 1; i <= numberOfFighters; i++) {
-
-            fightersService.addFighter();
-
-        }
+        fightersService.addFighters();
 
         fightersReady = new ArrayList<>(fightersService.getFighters().values());
 
@@ -41,7 +36,7 @@ public class Championship implements IChampionship {
 
                 System.out.println("---------COMBAT " + numberOfCombats + "-----------");
 
-                Animal winner = combat.startCombat(fightersReady.get(i), fightersReady.get(j));
+                Animal winner = Combat.startCombat(fightersReady.get(i), fightersReady.get(j), fightersService);
 
                 championshipTable.put(winner, championshipTable.containsKey(winner) ? championshipTable.get(winner) + 1 : 1);
 

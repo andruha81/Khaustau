@@ -12,8 +12,11 @@ public abstract class Animal {
     protected int agility;
     protected int health = DEFAULT_HEALTH;
 
-    public Animal(String name) {
+    public Animal(String name, int force, int agility) {
+
         this.name = name;
+        this.force = force;
+        this.agility = agility;
     }
 
     @Override

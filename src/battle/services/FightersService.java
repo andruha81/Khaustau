@@ -3,21 +3,19 @@ package battle.services;
 import battle.api.services.IFightersService;
 import battle.dao.FightersDao;
 import battle.entities.Animal;
-import battle.entities.Cat;
-import battle.entities.Dog;
-import battle.entities.Monkey;
-import battle.utils.Names;
+import battle.utils.InputOutput;
 
 import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class FightersService implements IFightersService {
 
     private final FightersDao fightersDao = new FightersDao();
 
     @Override
-    public void addFighter() {
-        fightersDao.addFighter(chooseFighter());
+    public void addFighters() {
+
+        InputOutput.readFile(InputOutput.enterPath(), fightersDao);
+
     }
 
     @Override
@@ -26,42 +24,13 @@ public class FightersService implements IFightersService {
     }
 
     @Override
-    public void editVictories(Animal fighter) {
-        fightersDao.editVictories(fighter);
+    public void setFighterHealthDefault(Animal fighter) {
+        fightersDao.setFighterHealthDefault(fighter);
     }
 
-    private Animal chooseFighter() {
-
-        Animal randomFighter;
-
-        int randNumberOfFighter = ThreadLocalRandom.current().nextInt(1, 4);
-
-        String name;
-
-        do {
-
-            name = Names.createName();
-
-        } while (Names.checkNameRepeat(fightersDao.getFighters(),name));
-
-        switch (randNumberOfFighter) {
-            case 1:
-                randomFighter = new Cat(name);
-                break;
-
-            case 2:
-                randomFighter = new Dog(name);
-                break;
-
-            case 3:
-                randomFighter = new Monkey(name);
-                break;
-
-            default:
-                randomFighter = new Cat(name);
-        }
-
-        return randomFighter;
+    @Override
+    public void editFighterHealth(Animal fighter, int healthDamage) {
+        fightersDao.editFighterHealth(fighter, healthDamage);
     }
 
 }

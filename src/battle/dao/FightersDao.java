@@ -22,7 +22,17 @@ public class FightersDao implements IFightersDao {
     }
 
     @Override
-    public void editVictories(Animal fighter) {
-        fighter.editVictories();
+    public void setFighterHealthDefault(Animal fighter) {
+        fighter.setHealthDefault();
     }
+
+    @Override
+    public void editFighterHealth(Animal fighter, int healthDamage) {
+
+        fighter.editHealth(healthDamage);
+
+        System.out.println(fighter.getFullName() + " health is " + fighter.getHealth());;
+
+    }
+
 }

@@ -6,10 +6,12 @@ import java.util.Map;
 
 public interface IFightersService {
 
-    void addFighter();
+    void addFighters();
 
     Map<String, Animal> getFighters();
 
-    void editVictories(Animal fighter);
+    void setFighterHealthDefault(Animal fighter);
+
+    void editFighterHealth(Animal fighter, int healthDamage);
 
 }

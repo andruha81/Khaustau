@@ -1,19 +1,21 @@
-package battle.services;
+package battle.utils;
 
-import battle.api.services.ICombat;
+import battle.api.services.IFightersService;
 import battle.entities.Animal;
+import org.apache.commons.lang3.RandomUtils;
 
-import java.util.concurrent.ThreadLocalRandom;
+public class Combat {
 
-public class Combat implements ICombat {
+    private static int serialAttacks = 1;            // Серия атак
+    private static int round;                    // Номер хода
+    private static Animal winner;
+    private static Animal attacker;
+    private static Animal defender;
 
-    private int serialAttacks = 1;            // Серия атак
-    private int round;                    // Номер хода
-    private Animal winner;
-    private Animal attacker;
-    private Animal defender;
+    private Combat() {
+    }
 
-    public Animal startCombat(Animal firstFighter, Animal secondFighter) {
+    public static Animal startCombat(Animal firstFighter, Animal secondFighter, IFightersService fightersService) {
 
         winner = null;
         attacker = null;
@@ -23,21 +25,24 @@ public class Combat implements ICombat {
 
         while (winner == null) {
             chooseWhoAttack(firstFighter, secondFighter);
-            attack();
+
+            fightersService.editFighterHealth(defender, attack());
+
             checkWinner();
         }
 
-        attacker.setHealthDefault();
-        defender.setHealthDefault();
+        fightersService.setFighterHealthDefault(attacker);
+        fightersService.setFighterHealthDefault(defender);
+
         return winner;
     }
 
-    private void chooseWhoAttack(Animal firstFighter, Animal secondFighter) {
+    private static void chooseWhoAttack(Animal firstFighter, Animal secondFighter) {
         System.out.println("******* ROUND" + round + " *******");
         round++;
 
         if (attacker == null) {
-            if (ThreadLocalRandom.current().nextInt(0, 2) == 0) {
+            if (RandomUtils.nextInt(0, 2) == 0) {
                 attacker = firstFighter;
                 defender = secondFighter;
             } else {
@@ -59,22 +64,21 @@ public class Combat implements ICombat {
         System.out.println("Attacking " + attacker.getFullName() + ", defending " + defender.getFullName());
     }
 
-    private boolean checkLuckyAttack() {
-        return (ThreadLocalRandom.current().nextInt(1, 5 * serialAttacks) == 5);
+    private static boolean checkLuckyAttack() {
+        return (RandomUtils.nextInt(1, 5 * serialAttacks) == 5);
     }
 
-    private void attack() {
+    private static int attack() {
         int damage = (attacker.getForce() - defender.getAgility());
         damage = Math.max(damage, 1);
 
         System.out.println(defender.getFullName() + " is damaged by " + damage);
 
-        defender.editHealth(damage);
+        return damage;
 
-        System.out.println(defender.getFullName() + " health is " + defender.getHealth());
     }
 
-    private void checkWinner() {
+    private static void checkWinner() {
         if (defender.getHealth() == 0) {
             winner = attacker;
             System.out.println("******* ENF OF THE BATTLE *******");

@@ -2,16 +2,15 @@ package battle;
 
 import battle.api.services.IChampionship;
 import battle.services.Championship;
+import battle.utils.InputOutput;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        int numberOfFighters = 4;    // Setting number of fighters
         IChampionship championship = new Championship();
 
-
-        championship.start(numberOfFighters);
+        championship.start();
 
         do {
 
