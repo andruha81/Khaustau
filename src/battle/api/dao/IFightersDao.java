@@ -2,16 +2,11 @@ package battle.api.dao;
 
 import battle.entities.Animal;
 
-import java.util.Map;
+import java.util.List;
 
 public interface IFightersDao {
 
-    void addFighter(Animal fighter);
+    void addFighters(List<Animal> fightersReadFromFile);
 
-    Map<String, Animal> getFighters();
-
-    void setFighterHealthDefault(Animal fighter);
-
-    void editFighterHealth(Animal fighter, int healthDamage);
-
-    }
+    List<Animal> getFighters();
+}

@@ -2,7 +2,7 @@ package battle.api.services;
 
 public interface IChampionship {
 
-    void start();
+    boolean start();
 
     void startCombats();
 
@@ -10,4 +10,5 @@ public interface IChampionship {
 
     void printResults();
 
+    void SaveResultsToFile();
 }

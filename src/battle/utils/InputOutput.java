@@ -1,25 +1,68 @@
 package battle.utils;
 
-import battle.api.dao.IFightersDao;
+import battle.entities.Animal;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class InputOutput {
 
     private InputOutput() {
     }
 
-    public static String enterPath() {
+    public static List<Animal> readFile() throws IOException {
+
+        System.out.println("Reading fighters");
+
+        return Stream.of(Files.lines(Path.of(enterPath())))
+                .flatMap(x -> x)
+                .map(CreateFighter::createFighter)
+                .collect(Collectors.toList());
+    }
+
+    public static String writeResultsToFile(Map<Animal, Integer> championshipTable) throws IOException {
+
+        System.out.println("Writing results");
+
+        String path = "results.txt";
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(path))) {
+
+            for (Map.Entry<Animal, Integer> result : championshipTable.entrySet()) {
+                writer.write(String.format("%s: %s victories %n", result.getKey().getFullName(), result.getValue()));
+            }
+        }
+        return path;
+    }
+
+    public static void serialiseFighter(Animal fighter) throws IOException {
+
+        try (FileOutputStream fileOutputStream = new FileOutputStream("animal.obj");
+             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
+            objectOutputStream.writeObject(fighter);
+        }
+    }
+
+    public static Animal deserialiseFighter() throws IOException, ClassNotFoundException {
+
+        try (FileInputStream fileInputStream = new FileInputStream("animal.obj");
+             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
+            return (Animal) objectInputStream.readObject();
+        }
+    }
+
+    private static String enterPath() throws IOException {
 
         String path;
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
 
-            System.out.println("Enter path to the txt file with fighters");
+            System.out.println("Enter path to the txt file");
 
             path = reader.readLine();
 
@@ -28,29 +71,8 @@ public class InputOutput {
                 System.out.println("Invalid path to the txt file. The extension of the file should be txt. Enter again");
 
                 path = reader.readLine();
-
             }
-
-        } catch (IOException e) {
-            path = "C:\\defaultFighters.txt";
         }
-
         return path;
-
     }
-
-    public static void readFile(String path, IFightersDao fightersDao) {
-
-        try {
-
-            Files.lines(Path.of(path))
-                    .map(CreateFighter::createAnimal)
-                    .forEach(x -> fightersDao.addFighter(x));
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
 }

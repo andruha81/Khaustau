@@ -2,10 +2,14 @@ package battle.entities;
 
 import lombok.Getter;
 
-@Getter
-public abstract class Animal {
+import java.io.Serializable;
+import java.util.Objects;
 
-    private static final int DEFAULT_HEALTH = 10;
+@Getter
+public abstract class Animal implements Serializable {
+
+    private static final long serialVersionUID = 6613826656822751310L;
+    protected static final int DEFAULT_HEALTH = 10;
     protected String name;
     protected TypeOfAnimals typeOfAnimal;
     protected int force;
@@ -25,8 +29,26 @@ public abstract class Animal {
                 + "\n" + "Force: " + force + ", Agility: " + agility;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Animal animal = (Animal) o;
+        return  this.name.equals(animal.getName()) &&
+                this.typeOfAnimal == animal.getTypeOfAnimal();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, typeOfAnimal);
+    }
+
     public String getFullName() {
         return this.typeOfAnimal + " " + this.getName();
+    }
+
+    public int getDefaultHealth() {
+        return DEFAULT_HEALTH;
     }
 
     public void setHealthDefault() {

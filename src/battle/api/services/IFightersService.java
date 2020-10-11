@@ -1,17 +1,14 @@
 package battle.api.services;
 
+import battle.api.exceptions.NullParticipantsException;
 import battle.entities.Animal;
 
-import java.util.Map;
+import java.io.IOException;
+import java.util.List;
 
 public interface IFightersService {
 
-    void addFighters();
+    void addFighters() throws IOException, NullParticipantsException;
 
-    Map<String, Animal> getFighters();
-
-    void setFighterHealthDefault(Animal fighter);
-
-    void editFighterHealth(Animal fighter, int healthDamage);
-
+    List<Animal> getFighters();
 }

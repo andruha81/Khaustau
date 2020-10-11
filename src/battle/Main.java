@@ -2,7 +2,6 @@ package battle;
 
 import battle.api.services.IChampionship;
 import battle.services.Championship;
-import battle.utils.InputOutput;
 
 public class Main {
 
@@ -10,15 +9,23 @@ public class Main {
 
         IChampionship championship = new Championship();
 
-        championship.start();
+        if (championship.start()) {
 
-        do {
+            System.out.println("Championship started");
 
-            championship.startCombats();
+            do {
 
-            championship.printResults();
+                championship.startCombats();
 
-        } while (!championship.checkWinner());
+                championship.printResults();
 
+            } while (!championship.checkWinner());
+
+            championship.SaveResultsToFile();
+
+        } else {
+
+            System.out.println("None fighters were found. Championship didn't start");
+        }
     }
 }

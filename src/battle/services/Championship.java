@@ -1,29 +1,44 @@
 package battle.services;
 
+import battle.api.exceptions.NullParticipantsException;
 import battle.api.services.IChampionship;
 import battle.api.services.IFightersService;
 import battle.entities.Animal;
 import battle.utils.Combat;
+import battle.utils.InputOutput;
 
+import java.io.IOException;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class Championship implements IChampionship {
 
     private int numberOfCombats;
     private final IFightersService fightersService = new FightersService();
-    private final Map<Animal, Integer> championshipTable = new LinkedHashMap<>();
+    private Map<Animal, Integer> championshipTable = null;
     private List<Animal> fightersReady;
 
     @Override
-    public void start() {
+    public boolean start() {
 
-        System.out.println("============START OF THE CHAMPIONSHIP++++++++++++++++");
+        boolean isChampionshipStarted;
 
-        fightersService.addFighters();
+        try {
 
-        fightersReady = new ArrayList<>(fightersService.getFighters().values());
+            fightersService.addFighters();
 
+            isChampionshipStarted = true;
+
+            championshipTable = fightersService.getFighters().stream().collect(Collectors.toMap(Function.identity(), x -> 0));
+
+            fightersReady = new ArrayList<>(fightersService.getFighters());
+
+        } catch (IOException | NullParticipantsException exception) {
+            isChampionshipStarted = false;
+        }
+
+        return isChampionshipStarted;
     }
 
     @Override
@@ -34,12 +49,11 @@ public class Championship implements IChampionship {
 
                 numberOfCombats++;
 
-                System.out.println("---------COMBAT " + numberOfCombats + "-----------");
+                System.out.printf("COMBAT %d%n", numberOfCombats);
 
-                Animal winner = Combat.startCombat(fightersReady.get(i), fightersReady.get(j), fightersService);
+                Animal winner = Combat.startCombat(fightersReady.get(i), fightersReady.get(j));
 
-                championshipTable.put(winner, championshipTable.containsKey(winner) ? championshipTable.get(winner) + 1 : 1);
-
+                championshipTable.put(winner, championshipTable.get(winner) + 1);
             }
         }
     }
@@ -52,12 +66,12 @@ public class Championship implements IChampionship {
         fightersReady = championshipTable.entrySet()
                 .stream()
                 .filter(x -> x.getValue() == maxNumberOfVictories)
-                .map(x -> x.getKey())
+                .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
 
         if (fightersReady.size() == 1) {
 
-            System.out.println("The winner of the championship is " + fightersReady.get(0).getFullName());
+            System.out.printf("The winner of the championship is %s%n", fightersReady.get(0).getFullName());
 
             return true;
 
@@ -70,16 +84,31 @@ public class Championship implements IChampionship {
         } else {
 
             return false;
-
         }
     }
 
     @Override
     public void printResults() {
 
-        System.out.println("##############RESULTS#############");
+        System.out.println("Result Table:");
 
-        championshipTable.forEach((k, v) -> System.out.println(k.getFullName() + " - " + v + " victories"));
+        championshipTable.entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .forEach(x -> System.out.printf("%s -  %s victories %n", x.getKey().getFullName(), x.getValue()));
+    }
 
+    @Override
+    public void SaveResultsToFile() {
+
+        try {
+
+            String path = InputOutput.writeResultsToFile(championshipTable);
+
+            System.out.printf("Results are saved to file %s%n", path);
+
+        } catch (IOException e) {
+            System.out.println("Couldn't save results of the championship");
+        }
     }
 }

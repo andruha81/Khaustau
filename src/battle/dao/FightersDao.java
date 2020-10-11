@@ -3,36 +3,20 @@ package battle.dao;
 import battle.api.dao.IFightersDao;
 import battle.entities.Animal;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FightersDao implements IFightersDao {
 
-    private final Map<String, Animal> fighters = new LinkedHashMap<>();
+    private final List<Animal> fighters = new ArrayList<>();
 
     @Override
-    public void addFighter(Animal fighter) {
-        this.fighters.put(fighter.getName(), fighter);
-        System.out.println("Fighter added: " + fighter.toString());
+    public void addFighters(List<Animal> fightersReadFromFile) {
+        fighters.addAll(fightersReadFromFile);
     }
 
     @Override
-    public Map<String, Animal> getFighters() {
+    public List<Animal> getFighters() {
         return fighters;
     }
-
-    @Override
-    public void setFighterHealthDefault(Animal fighter) {
-        fighter.setHealthDefault();
-    }
-
-    @Override
-    public void editFighterHealth(Animal fighter, int healthDamage) {
-
-        fighter.editHealth(healthDamage);
-
-        System.out.println(fighter.getFullName() + " health is " + fighter.getHealth());;
-
-    }
-
 }
